@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-demo-provider-v2
+  labels:
+    version: v2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo-provider
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: demo-provider
+        version: v2
+    spec:
+      containers:
+        - name: demo-provider
+          image: 192.168.103.64:8080/demo/demo-provider-v2:1.0.0-SNAPSHOT-v2
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: grpc
+              containerPort: 5443
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            failureThreshold: 2
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            failureThreshold: 2
+
+

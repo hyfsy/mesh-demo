@@ -1,0 +1,29 @@
+
+server:
+  port: 8081
+spring:
+  application:
+    name: demo-consumer
+  cloud:
+    kubernetes:
+      config:
+        fail-fast: true
+        include-profile-specific-sources: false
+        sources:
+        - name: ${spring.application.name}
+      reload:
+        enabled: true
+        monitoring-config-maps: true
+        monitoring-secrets: true
+
+k8s:
+  service:
+    demo:
+      name: service-demo-provider # k8s服务名称
+#      port: 8080 # 生产者端 HTTP服务端口
+
+cloudnative:
+  remoting:
+    mesh:
+      namespace: default
+      cluster-domain: cluster.local

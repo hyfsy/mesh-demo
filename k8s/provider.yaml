@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-demo-provider
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: grpc
+      port: 5443
+      targetPort: 5443
+  selector:
+    app: demo-provider
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-demo-provider-v1
+  labels:
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo-provider
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: demo-provider
+        version: v1
+    spec:
+      containers:
+        - name: demo-provider
+          image: 192.168.103.64:8080/demo/demo-provider:1.0.0-SNAPSHOT
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: grpc
+              containerPort: 5443
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            failureThreshold: 2
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            failureThreshold: 2
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: virtualservice-demo-provider
+spec:
+  hosts:
+    - "service-demo-provider.default.svc.cluster.local"
+  http:
+    - route:
+        - destination:
+            host: "service-demo-provider.default.svc.cluster.local"
+            subset: v1
+          weight: 100
+        - destination:
+            host: "service-demo-provider.default.svc.cluster.local"
+            subset: v2
+          weight: 0
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: destinationrule-demo-provider
+spec:
+  host: "service-demo-provider.default.svc.cluster.local"
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+    - name: v2
+      labels:
+        version: v2
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+
+

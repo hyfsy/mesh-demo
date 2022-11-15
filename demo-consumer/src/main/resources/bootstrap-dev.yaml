@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    kubernetes:
+      config:
+        fail-fast: false
+      client:
+        namespace: default

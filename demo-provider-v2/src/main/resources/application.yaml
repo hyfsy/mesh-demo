@@ -1,0 +1,13 @@
+
+server:
+  port: 8080
+spring:
+  application:
+    name: demo-provider
+
+cloudnative:
+  remoting:
+    mesh:
+      grpc:
+        server:
+          listen-port: 5443
