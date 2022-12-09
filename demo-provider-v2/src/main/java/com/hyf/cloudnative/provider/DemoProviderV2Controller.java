@@ -1,5 +1,6 @@
 package com.hyf.cloudnative.provider;
 
+import com.hyf.cloudnative.client.api.TestFallbackClient;
 import com.hyf.cloudnative.client.api.TestGrpcClient;
 import com.hyf.cloudnative.client.api.TestHttpClient;
 import com.hyf.cloudnative.client.entity.Result;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @GrpcController
 @RestController
 @RequestMapping("user")
-public class DemoProviderV2Controller implements TestHttpClient, TestGrpcClient {
+public class DemoProviderV2Controller implements TestHttpClient, TestGrpcClient, TestFallbackClient {
 
     @Override
     public Result<User> getUserByIdByHttp(Integer id) {
@@ -21,5 +22,10 @@ public class DemoProviderV2Controller implements TestHttpClient, TestGrpcClient 
     @Override
     public Result<User> getUserByIdByGrpc(Integer id) {
         return Result.of(new User(id, "v2: grpc_zhagnsan" + id));
+    }
+
+    @Override
+    public Result<User> getUserByFallback() {
+        throw new RuntimeException("v2: fallback test exception");
     }
 }

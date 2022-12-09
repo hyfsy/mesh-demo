@@ -1,5 +1,6 @@
 package com.hyf.cloudnative.consumer;
 
+import com.hyf.cloudnative.client.api.TestFallbackClient;
 import com.hyf.cloudnative.client.api.TestGrpcClient;
 import com.hyf.cloudnative.client.api.TestHttpClient;
 import com.hyf.cloudnative.client.entity.Result;
@@ -19,6 +20,8 @@ public class DemoConsumerController {
     private TestHttpClient testHttpClient;
     @Resource
     private TestGrpcClient testGrpcClient;
+    @Resource
+    private TestFallbackClient testFallbackClient;
 
     @Resource
     private DemoConsumerProperties properties;
@@ -36,5 +39,10 @@ public class DemoConsumerController {
     @GetMapping("config")
     public String getProperties() {
         return properties.toString();
+    }
+
+    @GetMapping("fallback")
+    public Result<User> getByFallback() {
+        return testFallbackClient.getUserByFallback();
     }
 }
