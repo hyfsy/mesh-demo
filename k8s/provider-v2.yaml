@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: deployment-demo-provider-v2
+  namespace: demo
   labels:
     version: v2
 spec:

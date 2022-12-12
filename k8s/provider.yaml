@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: service-demo-provider
+  namespace: demo
 spec:
   ports:
     - name: http
@@ -17,6 +18,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: deployment-demo-provider-v1
+  namespace: demo
   labels:
     version: v1
 spec:
@@ -59,17 +61,18 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: virtualservice-demo-provider
+  namespace: demo
 spec:
   hosts:
-    - "service-demo-provider.default.svc.cluster.local"
+    - "service-demo-provider.demo.svc.cluster.local"
   http:
     - route:
         - destination:
-            host: "service-demo-provider.default.svc.cluster.local"
+            host: "service-demo-provider.demo.svc.cluster.local"
             subset: v1
           weight: 100
         - destination:
-            host: "service-demo-provider.default.svc.cluster.local"
+            host: "service-demo-provider.demo.svc.cluster.local"
             subset: v2
           weight: 0
 ---
@@ -77,8 +80,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: destinationrule-demo-provider
+  namespace: demo
 spec:
-  host: "service-demo-provider.default.svc.cluster.local"
+  host: "service-demo-provider.demo.svc.cluster.local"
   subsets:
     - name: v1
       labels:
