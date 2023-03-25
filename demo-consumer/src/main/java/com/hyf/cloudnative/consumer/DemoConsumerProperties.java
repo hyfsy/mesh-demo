@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class DemoConsumerProperties {
 
     private Integer id;
-    private String name;
+    private String  name;
 
     public Integer getId() {
         return id;
@@ -29,5 +29,7 @@ public class DemoConsumerProperties {
     }
 
     @Override
-    public String toString() {return "id=" + id + ", name=" + name;}
+    public String toString() {
+        return "id=" + id + ", name=" + name;
+    }
 }

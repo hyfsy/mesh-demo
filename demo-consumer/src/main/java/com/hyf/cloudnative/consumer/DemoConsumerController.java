@@ -17,9 +17,9 @@ import javax.annotation.Resource;
 public class DemoConsumerController {
 
     @Resource
-    private TestHttpClient testHttpClient;
+    private TestHttpClient     testHttpClient;
     @Resource
-    private TestGrpcClient testGrpcClient;
+    private TestGrpcClient     testGrpcClient;
     @Resource
     private TestFallbackClient testFallbackClient;
 
